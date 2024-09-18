@@ -1,12 +1,12 @@
 const express = require('express');
 const { LocalStorage } = require('node-localstorage');
-
+const cors = require('cors');  
 // Initialize localStorage
 const localStorage = new LocalStorage('./scratch');
 
 const app = express();
 const PORT = 3000;
-
+app.use(cors());
 // Middleware to parse JSON bodies
 app.use(express.json());
 
