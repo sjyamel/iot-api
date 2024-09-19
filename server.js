@@ -1,8 +1,10 @@
 const express = require('express');
+const mongoose = require("mongoose");
+const {LEDModel} = require("./led");
 const { LocalStorage } = require('node-localstorage');
 const cors = require('cors');  
 // Initialize localStorage
-const localStorage = new LocalStorage('/tmp/scratch');
+
 
 const app = express();
 const PORT = 3000;
@@ -10,15 +12,24 @@ app.use(cors());
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+mongoose
+  .connect('mongodb+srv://iotuser:oe0QRvauitHhhBcX@cluster0.s9qw4.mongodb.net/IOT')
+  .then(() => console.log('DB connection successful!'));
+
 // Endpoint to view the button status
-app.get('/led-status', (req, res) => {
+app.get('/led-status', async(req, res) => {
   // Get status from localStorage
-  const buttonStatus = localStorage.getItem('buttonStatus') || 'off'; // default is 'off' if not set
+  let led;
+  led = await LEDModel.findOne({led: "led"});
+  if(!led){
+    led = await LEDModel.create({led: "led", status: "off"});
+  }
+  const buttonStatus = led?.status; // default is 'off' if not set
   res.json({ status: buttonStatus });
 });
 
 // Endpoint to update the button status
-app.post('/update-led-status', (req, res) => {
+app.post('/update-led-status', async (req, res) => {
   const { status } = req.body;
 
   if (status !== 'on' && status !== 'off') {
@@ -26,7 +37,8 @@ app.post('/update-led-status', (req, res) => {
   }
 
   // Update status in localStorage
-  localStorage.setItem('buttonStatus', status);
+  led = await LEDModel.findOne({led: "led"});
+  await LEDModel.findByIdAndUpdate(led?.id, {status: status});
 
   res.json({ message: `Button status updated to ${status}` });
 });
