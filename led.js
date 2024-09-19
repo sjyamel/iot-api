@@ -9,4 +9,4 @@ const LEDSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("LEDs", LEDSchema);
+exports.LEDModel = mongoose.model("LEDs", LEDSchema);

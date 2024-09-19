@@ -20,11 +20,11 @@ mongoose
 app.get('/led-status', async(req, res) => {
   // Get status from localStorage
   let led;
-  led = await LEDModel.findOne({led: "led"});
-  if(!led){
+  led = await LEDModel.find({led: "led"});
+  if(!led[0]){
     led = await LEDModel.create({led: "led", status: "off"});
   }
-  const buttonStatus = led?.status; // default is 'off' if not set
+  const buttonStatus = led[0]?.status; // default is 'off' if not set
   res.json({ status: buttonStatus });
 });
 
@@ -37,8 +37,8 @@ app.post('/update-led-status', async (req, res) => {
   }
 
   // Update status in localStorage
-  led = await LEDModel.findOne({led: "led"});
-  await LEDModel.findByIdAndUpdate(led?.id, {status: status});
+  led = await LEDModel.find({led: "led"});
+  await LEDModel.findByIdAndUpdate(led[0]?.id, {status: status});
 
   res.json({ message: `Button status updated to ${status}` });
 });
