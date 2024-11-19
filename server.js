@@ -31,13 +31,7 @@ app.get('/led-status', async(req, res) => {
 // Endpoint to update the button status
 app.post('/update-led-status', async (req, res) => {
   const { status } = req.body;
-  await fetch(`http://192.168.1.220/led/${status}`)
-  .then(res => res.text())
-  .then(data=>{
-    console.log(data);
-  }).catch(error => {
-    console.error("Error", error);
-  })
+  
   if (status !== 'on' && status !== 'off') {
     return res.status(400).json({ error: 'Invalid status. Only "on" or "off" are allowed.' });
   }
