@@ -31,7 +31,7 @@ app.get('/led-status', async(req, res) => {
 // Endpoint to update the button status
 app.post('/update-led-status', async (req, res) => {
   const { status } = req.body;
-  await fetch(`192.168.1.220/led/${status}`)
+  await fetch(`http://192.168.1.220/led/${status}`)
   .then(res => res.text())
   .then(data=>{
     console.log(data);
